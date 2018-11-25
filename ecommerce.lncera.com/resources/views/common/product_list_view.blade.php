@@ -17,7 +17,7 @@
 
 <section role="main" class="content-body">
     <header class="page-header">
-        <h2>Category</h2>
+        <h2>Product List</h2>
 
         <div class="right-wrapper text-right">
             <ol class="breadcrumbs">
@@ -26,8 +26,8 @@
                         <i class="fa fa-home"></i>
                     </a>
                 </li>
-                <li><span>Layouts</span></li>
-                <li><span>Dark Header</span></li>
+                <li><span>Product</span></li>
+                <li><span>Product List</span></li>
             </ol>
 
             <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
@@ -60,11 +60,13 @@
                         </thead>
                         <tbody>
                         @foreach($products as $product)
-
+                        <?php
+                            $image = json_decode($product['image']);
+                        ?>
                             <tr>
                                 <td>
-                                    <a class="image-popup-no-margins" href="{{asset('storage/images/CWtCYPUpjOV4FIqgu76iqNwumC5XAfhzyQZuBbK9.jpeg')}}">
-                                        <img class="img-fluid" src="{{asset('storage/images/CWtCYPUpjOV4FIqgu76iqNwumC5XAfhzyQZuBbK9.jpeg')}}" width="75">
+                                    <a class="image-popup-no-margins" href="{{asset('storage/'.$image[0])}}">
+                                        <img class="img-fluid" src="{{asset('storage/'.$image[0])}}" width="75">
                                     </a>
                                 </td>
                                 <td>{{$product->name}}</td>

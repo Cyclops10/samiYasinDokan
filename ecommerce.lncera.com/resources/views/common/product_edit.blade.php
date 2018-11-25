@@ -12,6 +12,8 @@
 <link rel="stylesheet" href="{{URL::asset('back/vendor/owl.carousel/assets/owl.carousel.css')}}" />
 <link rel="stylesheet" href="{{URL::asset('back/vendor/owl.carousel/assets/owl.theme.default.css')}}" />
 
+<link rel="stylesheet" href="{{URL::asset('back/vendor/magnific-popup/magnific-popup.css')}}" />
+
 @endsection
 
 @section('content')
@@ -72,6 +74,20 @@
                             <label class="col-lg-3 control-label text-lg-right pt-2" for="textareaAutosize">Product Details<span class="required">*</span></label>
                             <div class="col-lg-9">
                                 <textarea class="form-control" rows="3" id="textareaAutosize" name="desc" data-plugin-textarea-autosize>{{ $product->desc }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-lg-3 control-label text-lg-right pt-2" for="textareaAutosize">Existing Image <span class="required">*</span></label>
+                            <div class="col-lg-9 offset-md-3">
+                                <div class="gallery">
+                                @foreach($images as $image)
+                                    <span class="closex"><a href="" title="Delete"><i class="fa fa-trash-o"></i></a></span>
+                                    <a class="image-popup-no-margins" href="{{asset('storage/'.$image)}}">
+                                        <img src="{{asset('storage/'.$image)}}" class="img-fluid img-thumbnail" style="width: 74px; height: 74px;">
+                                    </a>
+                                @endforeach
+                                </div>
                             </div>
                         </div>
 
@@ -204,30 +220,38 @@
                         </div>
 
                         <div class="form-group row element_form">
-                            <div class="row col-md-12 spec_element" data-book-index="0">
-                                <div class="col-md-11">
-                                    <section class="card card-featured single_element mb-12">
-                                        <header class="card-header">
-                                            <input type="text" name="element[0][]" class="form-control element_name" title="Please enter a Field Name." placeholder="Ex.: Color" required="">
-                                        </header>
-                                        <div class="card-body row">
-                                            <div class="col-sm-4">
-                                                <input type="text" name="element[0][0][]" class="form-control element_value" title="Please enter a Field Value." placeholder="Ex.: Red" required="">
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <input type="text" name="element[0][0][]" class="form-control element_quan" title="Please enter a Field Quantity." placeholder="Ex.: 10" required="">
-                                            </div>
-                                            <div class="col-sm-1">
-                                                <button type="button" class="btn btn-default maddButton"><i class="fa fa-plus"></i></button>
-                                            </div>
-                                        </div>
-                                    </section>
-                                </div>
+                        <?php
+                            $i=0;
+                        ?>
+                            @foreach($elements as $element)
+                                <div class="row col-md-12 spec_element" data-book-index="{{$i++}}">
+                                    <div class="col-md-11">
+                                        <section class="card card-featured single_element mb-12">
+                                            <header class="card-header">
+                                                <input type="text" name="element[0][name]" value="{{$element->name}}" class="form-control element_name" title="Please enter a Field Name." placeholder="Ex.: Color" required="">
+                                            </header>
+                                            @foreach(array_combine($element->value, $element->quan) as $value => $quan)
+                                                <div class="card-body row">
+                                                    <div class="col-sm-4">
+                                                        <input type="text" name="element[0][value][]" value="{{$value}}" class="form-control element_value" title="Please enter a Field Value." placeholder="Ex.: Red" required="">
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <input type="text" name="element[0][quan][]" value="{{$quan}}" class="form-control element_quan" title="Please enter a Field Quantity." placeholder="Ex.: 10" required="">
+                                                    </div>
+                                                    <div class="col-sm-1">
+                                                        <button type="button" class="btn btn-default maddButton"><i class="fa fa-plus"></i></button>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </section>
+                                    </div>
 
-                                <div class="col-md-1">
-                                    <button type="button" class="btn btn-default addButton"><i class="fa fa-plus"></i></button>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-default addButton"><i class="fa fa-plus"></i></button>
+                                    </div>
                                 </div>
-                            </div>
+                            @endforeach
+
                         </div>
 
                         <!-- Template-->
@@ -235,14 +259,14 @@
                             <div class="col-md-11">
                                 <section class="card card-featured single_element mb-12">
                                     <header class="card-header">
-                                        <input type="text" name="element[0][]" class="form-control element_name" title="Please enter a Field Name." placeholder="Ex.: Color" required="" disabled="disabled">
+                                        <input type="text" name="element[0][name]" class="form-control element_name" title="Please enter a Field Name." placeholder="Ex.: Color" required="" disabled="disabled">
                                     </header>
                                     <div class="card-body row">
                                         <div class="col-sm-4">
-                                            <input type="text" name="element[0][]" class="form-control element_value" title="Please enter a Field Value." placeholder="Ex.: Red" required="" disabled="disabled">
+                                            <input type="text" name="element[0][value][]" class="form-control element_value" title="Please enter a Field Value." placeholder="Ex.: Red" required="" disabled="disabled">
                                         </div>
                                         <div class="col-sm-2">
-                                            <input type="text" name="element[0][]" class="form-control element_quan" title="Please enter a Field Quantity." placeholder="Ex.: 10" required="" disabled="disabled">
+                                            <input type="text" name="element[0][quan][]" class="form-control element_quan" title="Please enter a Field Quantity." placeholder="Ex.: 10" required="" disabled="disabled">
                                         </div>
                                         <div class="col-sm-1">
                                             <button type="button" class="btn btn-default maddButton"><i class="fa fa-plus"></i></button>
@@ -258,10 +282,10 @@
 
                         <div class="card-body single row hidden" id="m_template_element">
                             <div class="col-sm-4">
-                                <input type="text" name="element[0][]" class="form-control element_value" title="Please enter a Field Value." placeholder="Ex.: Red" required="" disabled="disabled">
+                                <input type="text" name="element[0][value][]" class="form-control element_value" title="Please enter a Field Value." placeholder="Ex.: Red" required="" disabled="disabled">
                             </div>
                             <div class="col-sm-2">
-                                <input type="text" name="element[0][]" class="form-control element_quan" title="Please enter a Field Quantity." placeholder="Ex.: 10" required="" disabled="disabled">
+                                <input type="text" name="element[0][quan][]" class="form-control element_quan" title="Please enter a Field Quantity." placeholder="Ex.: 10" required="" disabled="disabled">
                             </div>
                             <div class="col-sm-1">
                                 <button type="button" class="btn btn-default mremoveButton"><i class="fa fa-minus"></i></button>
@@ -286,13 +310,13 @@
                                 var childCount=jQuery(father).find(".element_value").length;
                                 console.log("childcount="+childCount);
 
-                                jQuery(father).find(".element_name:eq("+0+")").attr("name","element["+(i-1)+"]["+0+"][]");
+                                jQuery(father).find(".element_name:eq("+0+")").attr("name","element["+(i-1)+"][name]");
                                 jQuery(father).find(".element_name:eq("+0+")").removeAttr("disabled");
                                 for(var j=0;j<=childCount;j++)
                                 {
-                                    jQuery(father).find(".element_value:eq("+j+")").attr("name","element["+(i-1)+"]["+(j+1)+"][]");
+                                    jQuery(father).find(".element_value:eq("+j+")").attr("name","element["+(i-1)+"][value][]");
                                     jQuery(father).find(".element_value:eq("+j+")").removeAttr("disabled");
-                                    jQuery(father).find(".element_quan:eq("+j+")").attr("name","element["+(i-1)+"]["+(j+1)+"][]");
+                                    jQuery(father).find(".element_quan:eq("+j+")").attr("name","element["+(i-1)+"][quan][]");
                                     jQuery(father).find(".element_quan:eq("+j+")").removeAttr("disabled");
                                     child= jQuery(father).find(".element_value:eq("+j+")").attr("name");
                                     console.log("child="+child);
@@ -511,4 +535,6 @@
     <script src="{{URL::asset('back/js/examples/examples.validation.js')}}"></script>
 
     <script src="{{URL::asset('back/js/examples/examples.treeview.js')}}"></script>
+
+    <script src="{{URL::asset('back/js/examples/examples.lightbox.js')}}"></script>
 @endsection

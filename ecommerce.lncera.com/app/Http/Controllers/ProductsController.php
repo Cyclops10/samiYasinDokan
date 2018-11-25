@@ -9,6 +9,7 @@ use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProductsController extends Controller
@@ -42,69 +43,82 @@ class ProductsController extends Controller
 
     public function proCreate(Request $request)
     {
+        $images=array();
         $validator = Validator::make(Input::all(), Product::rules(0));
 
-        print("<html><head></head><body><pre>".print_r(json_encode(Input::get('element'),JSON_PRETTY_PRINT),true)."</pre></body></html>");
+//        print("<html><head></head><body><pre>".print_r(json_encode(Input::get('element'),JSON_PRETTY_PRINT),true)."</pre></body></html>");
+        //echo 'sami1';
 
         if($validator->passes())
         {
+            //echo 'sami2';
+            if($request->hasFile('images'))
+            {
+                //echo 'sami3';
+                $allowedfileExtension=['pdf','jpg','png','jpeg'];
+                $files = $request->file('images');
+                foreach($files as $file)
+                {
+                    //echo 'sami4';
+                    $filename = $file->getClientOriginalName();
+                    $extension = $file->getClientOriginalExtension();
+                    $check=in_array($extension,$allowedfileExtension);
+                    if($check)
+                    {
+                        //echo 'sami5';
+                        $filename = $file->store('public/images');
+                        if(Storage::exists($filename))
+                        {
+                            //echo 'sami6';
+                            array_push($images, substr($filename,7));
+                            print("<html><head></head><body><pre>".print_r(json_encode($images,JSON_PRETTY_PRINT),true)."</pre></body></html>");
+                            echo "Upload Successfully";
+                        }
+                        else
+                        {
+                            //echo 'sami7';
+                            return Redirect::to(route('admin_product'))
+                            ->with('message','Image Upload Failed')
+                            ->withErrors($validator)
+                            ->withInput();
+                        }
+                    }
+                    else
+                    {
+                        return Redirect::to(route('admin_product'))
+                            ->with('message','Invalid Extension')
+                            ->withErrors($validator)
+                            ->withInput();
+                    }
+                }
+            }
+
+            //echo 'sami8';
             $product = new Product();
             $product->name=Input::get('name');
             $product->cat_id=Input::get('cat_id');
             $product->desc=Input::get('desc');
             $product->price=Input::get('price');
             $product->quantity=Input::get('available');
+            $product->element=json_encode(Input::get('element'),JSON_PRETTY_PRINT);
+            $product->image=json_encode($images,JSON_PRETTY_PRINT);
             $product->save();
 
-            $product->elements()->attach(Input::get('subelement'));
+            //$product->elements()->attach(Input::get('subelement'));
 
-            if($request->hasFile('images'))
-            {
-                $allowedfileExtension=['pdf','jpg','png','docx'];
-                $files = $request->file('images');
-                foreach($files as $file)
-                {
-                    $filename = $file->getClientOriginalName();
-                    $extension = $file->getClientOriginalExtension();
-                    $check=in_array($extension,$allowedfileExtension);
-                    //dd($check);
-                    if($check)
-                    {
-
-                      //  foreach ($request->images as $image) {
-                            $filename = $file->store('images');
-                            $products_images = new Image();
-                            $products_images->pro_id=$product->id;
-                            $products_images->type = 'product';
-                            $products_images->file_path = $filename;
-                            $products_images->save();
-                       // }
-                        echo "Upload Successfully";
-                    }
-                    else
-                    {
-                        /*return Redirect::to(route('admin_product'))
-                            ->with('message','Invalid Extension')
-                            ->withErrors($validator)
-                            ->withInput();*/
-                    }
-                }
-            }
-            //return Redirect::to(route('admin_product'))->with('message','Product Created');
+            return Redirect::to(route('admin_product_list'))->with('message','Product Created');
         }
-
-        /*return Redirect::to(route('admin_product'))
+        return Redirect::to(route('admin_product'))
             ->with('message','Something went wrong')
             ->withErrors($validator)
-            ->withInput();*/
+            ->withInput();
     }
 
     public function proEditShow($id)
     {
-        $product = Product::all();
         $product = Product::findOrFail($id);
 
-        return view('common.product_edit')->with(['product'=>$product,'categories' => Category::all()]);
+        return view('common.product_edit')->with(['product'=>$product,'images'=>json_decode($product['image']),'elements'=>json_decode($product['element']),'categories' => Category::all()]);
     }
 
     public function proEdit($id)
@@ -119,6 +133,7 @@ class ProductsController extends Controller
             $product->quantity = Input::get('available');
             $product->price = Input::get('price');
             $product->cat_id=Input::get('cat_id');
+            $product->element=json_encode(Input::get('element'),JSON_PRETTY_PRINT);
             $product->save();
 
             return Redirect::to(route('admin_product_edit_show',$id))->with('message','Category Updated');

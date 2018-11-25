@@ -18,7 +18,7 @@
 
 <section role="main" class="content-body">
     <header class="page-header">
-        <h2>Product</h2>
+        <h2>Add New Product</h2>
 
         <div class="right-wrapper text-right">
             <ol class="breadcrumbs">
@@ -27,8 +27,8 @@
                         <i class="fa fa-home"></i>
                     </a>
                 </li>
-                <li><span>Layouts</span></li>
-                <li><span>Dark Header</span></li>
+                <li><span>Product</span></li>
+                <li><span>Add Product</span></li>
             </ol>
 
             <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
