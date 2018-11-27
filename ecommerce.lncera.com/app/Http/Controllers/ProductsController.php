@@ -19,6 +19,10 @@ class ProductsController extends Controller
         $this->middleware('auth');
     }
 
+    public function frontSingleProductView($id)
+    {
+        return view('product')->with(['product' => Product::findOrFail($id)]);
+    }
     public function productListView()
     {
         return view('common.product_list_view')->with(['products' => Product::with("categories")->get()]);
@@ -121,12 +125,57 @@ class ProductsController extends Controller
         return view('common.product_edit')->with(['product'=>$product,'images'=>json_decode($product['image']),'elements'=>json_decode($product['element']),'categories' => Category::all()]);
     }
 
-    public function proEdit($id)
+    public function proEdit(Request $request, $id)
     {
+        $images=array();
+        $product = Product::findOrFail($id);
+        $server_image = json_decode($product->image);
+
         $validator = Validator::make(Input::all(), Product::rules($id));
 
         if($validator->passes()) {
-            $product = Product::findOrFail($id);
+
+            if($request->hasFile('images'))
+            {
+                //echo 'sami3';
+                $allowedfileExtension=['pdf','jpg','png','jpeg'];
+                $files = $request->file('images');
+                foreach($files as $file)
+                {
+                    //echo 'sami4';
+                    $filename = $file->getClientOriginalName();
+                    $extension = $file->getClientOriginalExtension();
+                    $check=in_array($extension,$allowedfileExtension);
+                    if($check)
+                    {
+                        //echo 'sami5';
+                        $filename = $file->store('public/images');
+                        if(Storage::exists($filename))
+                        {
+                            //echo 'sami6';
+                            array_push($server_image, substr($filename,7));
+//                            print("<html><head></head><body><pre>".print_r(json_encode($images,JSON_PRETTY_PRINT),true)."</pre></body></html>");
+//                            echo "Upload Successfully";
+                        }
+                        else
+                        {
+                            //echo 'sami7';
+                            return Redirect::to(route('admin_product'))
+                                ->with('message','Image Upload Failed')
+                                ->withErrors($validator)
+                                ->withInput();
+                        }
+                    }
+                    else
+                    {
+                        return Redirect::to(route('admin_product'))
+                            ->with('message','Invalid Extension')
+                            ->withErrors($validator)
+                            ->withInput();
+                    }
+                }
+            }
+
 
             $product->name = Input::get('name');
             $product->desc = Input::get('desc');
@@ -134,6 +183,8 @@ class ProductsController extends Controller
             $product->price = Input::get('price');
             $product->cat_id=Input::get('cat_id');
             $product->element=json_encode(Input::get('element'),JSON_PRETTY_PRINT);
+//            print("<html><head></head><body><pre>".print_r($server_image,true)."</pre></body></html>");
+            $product->image=json_encode($server_image,JSON_PRETTY_PRINT);
             $product->save();
 
             return Redirect::to(route('admin_product_edit_show',$id))->with('message','Category Updated');
@@ -143,5 +194,43 @@ class ProductsController extends Controller
             ->with('message','Something went wrong')
             ->withErrors($validator)
             ->withInput();
+    }
+
+    public function proDestroy($id)
+    {
+        $product = Product::find($id);
+
+        if($product)
+        {
+            $images = json_decode($product->image);
+            foreach($images as $image)
+            {
+                Storage::delete('/public/'.$image);
+            }
+
+            $product->delete();
+            return Redirect::to('admin/product')->with('message','Product Deleted');
+        }
+
+        return Redirect::to('admin/product')->with('message','Something went wrong, Please try again ');
+    }
+
+    public function proImageDestroy($id,$imgId)
+    {
+        $product = Product::find($id);
+
+        if($product)
+        {
+            $image = json_decode($product->image);
+            Storage::delete('/public/'.$image[$imgId]);
+            array_splice($image, $imgId, 1);
+
+            $product->image=json_encode($image,JSON_PRETTY_PRINT);
+            $product->save();
+
+            return Redirect::to(route('admin_product_edit_show',$product->id))->with('message','Product Deleted');
+        }
+
+        return Redirect::to(route('admin_product_edit_show',$id))->with('message','Something went wrong, Please try again ');
     }
 }

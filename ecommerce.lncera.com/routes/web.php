@@ -15,7 +15,8 @@ Route::get('/', function () {return view('index'); } )->name('index');
 Route::get('/wishlist', function () {return view('index'); } )->name('wishlist');
 Route::get('/checkout', function () {return view('index'); } )->name('checkout');
 Route::get('/cart', function () {return view('cart'); } )->name('cart');
-Route::get('/product/{id}', function () {return view('product'); });
+//Route::get('/product/{id}', function () {return view('product'); });
+Route::get('/product/{id}', ['uses'=>'ProductsController@frontSingleProductView','as'=>'front_single_product_view']);
 
 //Route::get('/', 'CategoriesController@getIndex')->name('categories');
 
@@ -66,6 +67,7 @@ Route::get('/admin/product/{id}/edit', ['uses'=>'ProductsController@proEditShow'
 Route::post('/admin/product/{id}/edit', ['uses'=>'ProductsController@proEdit','as'=>'admin_product_edit','middleware'=>'roles','roles'=>'admin']);
 
 Route::get('/admin/product/{id}/delete', ['uses'=>'ProductsController@proDestroy','as'=>'admin_product_delete','middleware'=>'roles','roles'=>'admin']);
+Route::get('/admin/product/{id}/image/{imgId}/delete', ['uses'=>'ProductsController@proImageDestroy','as'=>'admin_product_image_delete','middleware'=>'roles','roles'=>'admin']);
 
 Route::post('/admin/product/cat-element', ['uses'=>'ProductsController@proCatElement','as'=>'admin_product_cat_element','middleware'=>'roles','roles'=>'admin']);
 

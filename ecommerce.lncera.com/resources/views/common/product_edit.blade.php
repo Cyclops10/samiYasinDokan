@@ -77,19 +77,24 @@
                             </div>
                         </div>
 
+                        @if(!empty($images))
                         <div class="form-group row">
                             <label class="col-lg-3 control-label text-lg-right pt-2" for="textareaAutosize">Existing Image <span class="required">*</span></label>
-                            <div class="col-lg-9 offset-md-3">
+                            <div class="col-lg-9">
                                 <div class="gallery">
+                                <?php $i=0;?>
                                 @foreach($images as $image)
-                                    <span class="closex"><a href="" title="Delete"><i class="fa fa-trash-o"></i></a></span>
-                                    <a class="image-popup-no-margins" href="{{asset('storage/'.$image)}}">
-                                        <img src="{{asset('storage/'.$image)}}" class="img-fluid img-thumbnail" style="width: 74px; height: 74px;">
-                                    </a>
+                                    <div class="img-wrap">
+                                        <span class="closex"><a href="{{ route('admin_product_image_delete',[$product->id,$i++]) }}" title="Delete"><i class="fa fa-trash-o"></i></a></span>
+                                        <a class="image-popup-no-margins" href="{{asset('storage/'.$image)}}">
+                                            <img src="{{asset('storage/'.$image)}}" class="img-fluid img-thumbnail" style="width: 74px; height: 74px;">
+                                        </a>
+                                    </div>
                                 @endforeach
                                 </div>
                             </div>
                         </div>
+                        @endif
 
                         <div class="form-group row">
                             <label class="col-lg-3 control-label text-lg-right pt-2">Product Image</label>
@@ -230,25 +235,38 @@
                                             <header class="card-header">
                                                 <input type="text" name="element[0][name]" value="{{$element->name}}" class="form-control element_name" title="Please enter a Field Name." placeholder="Ex.: Color" required="">
                                             </header>
+                                            <?php $j=0;?>
                                             @foreach(array_combine($element->value, $element->quan) as $value => $quan)
-                                                <div class="card-body row">
+                                                <?php $j++;?>
+                                                <div class="card-body @if($j!=1){{"single"}} @endif row">
                                                     <div class="col-sm-4">
                                                         <input type="text" name="element[0][value][]" value="{{$value}}" class="form-control element_value" title="Please enter a Field Value." placeholder="Ex.: Red" required="">
                                                     </div>
                                                     <div class="col-sm-2">
                                                         <input type="text" name="element[0][quan][]" value="{{$quan}}" class="form-control element_quan" title="Please enter a Field Quantity." placeholder="Ex.: 10" required="">
                                                     </div>
+                                                    @if($j==1)
                                                     <div class="col-sm-1">
                                                         <button type="button" class="btn btn-default maddButton"><i class="fa fa-plus"></i></button>
                                                     </div>
+                                                    @elseif($j!=1)
+                                                    <div class="col-sm-1">
+                                                        <button type="button" class="btn btn-default mremoveButton"><i class="fa fa-minus"></i></button>
+                                                    </div>
+                                                    @endif
                                                 </div>
                                             @endforeach
                                         </section>
                                     </div>
-
+                                    @if($i==1)
                                     <div class="col-md-1">
                                         <button type="button" class="btn btn-default addButton"><i class="fa fa-plus"></i></button>
                                     </div>
+                                    @elseif($i!=1)
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
+                                    </div>
+                                    @endif
                                 </div>
                             @endforeach
 

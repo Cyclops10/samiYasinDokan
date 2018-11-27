@@ -16,12 +16,38 @@
         <!--Middle Part Start-->
         <div id="content" class="col-sm-9">
           <div itemscope itemtype="http://schema.org/Product">
-            <h1 class="title" itemprop="name">Laptop Silver black</h1>
+            <h1 class="title" itemprop="name">{{$product->name}}</h1>
             <div class="row product-info">
+              <?php
+                  $image = json_decode($product->image);
+
+                  if(empty($image[0]))
+                      $image_path = asset('storage/images/default_image.png');
+                  else
+                      $image_path = asset('storage/'.$image[0]);
+              ?>
               <div class="col-sm-6">
-                <div class="image"><img class="img-responsive" itemprop="image" id="zoom_01" src="{{URL::asset('front/image/product/macbook_air_1-350x350.jpg')}}" title="Laptop Silver black" alt="Laptop Silver black" data-zoom-image="{{URL::asset('front/image/product/macbook_air_1-500x500.jpg')}}" /> </div>
-                <div class="center-block text-center"><span class="zoom-gallery"><i class="fa fa-search"></i> Click image for Gallery</span></div>
-                <div class="image-additional" id="gallery_01"> <a class="thumbnail" href="#" data-zoom-image="{{URL::asset('front/image/product/macbook_air_1-500x500.jpg')}}" data-image="{{URL::asset('front/image/product/macbook_air_1-350x350.jpg')}}" title="Laptop Silver black"> <img src="{{URL::asset('front/image/product/macbook_air_1-66x66.jpg')}}" title="Laptop Silver black" alt = "Laptop Silver black"/></a> <a class="thumbnail" href="#" data-zoom-image="{{URL::asset('front/image/product/macbook_air_4-500x500.jpg')}}" data-image="{{URL::asset('front/image/product/macbook_air_4-350x350.jpg')}}" title="Laptop Silver black"><img src="{{URL::asset('front/image/product/macbook_air_4-66x66.jpg')}}" title="Laptop Silver black" alt="Laptop Silver black" /></a> <a class="thumbnail" href="#" data-zoom-image="{{URL::asset('front/image/product/macbook_air_2-500x500.jpg')}}" data-image="{{URL::asset('front/image/product/macbook_air_2-350x350.jpg')}}" title="Laptop Silver black"><img src="{{URL::asset('front/image/product/macbook_air_2-66x66.jpg')}}" title="Laptop Silver black" alt="Laptop Silver black" /></a> <a class="thumbnail" href="#" data-zoom-image="{{URL::asset('front/image/product/macbook_air_3-500x500.jpg')}}" data-image="{{URL::asset('front/image/product/macbook_air_3-350x350.jpg')}}" title="Laptop Silver black"><img src="{{URL::asset('front/image/product/macbook_air_3-66x66.jpg')}}" title="Laptop Silver black" alt="Laptop Silver black" /></a> </div>
+                <div class="image">
+                    <img class="img-responsive" itemprop="image" id="zoom_01" src="{{$image_path}}" title="Laptop Silver black" alt="Laptop Silver black" data-zoom-image="{{$image_path}}" />
+                </div>
+                <div class="center-block text-center">
+                    <span class="zoom-gallery"><i class="fa fa-search"></i> Click image for Gallery</span>
+                </div>
+
+                <div class="image-additional" id="gallery_01">
+                    <a class="thumbnail" href="#" data-zoom-image="{{$image_path}}" data-image="{{$image_path}}" title="Laptop Silver black">
+                        <img src="{{$image_path}}" title="Laptop Silver black" alt = "Laptop Silver black"/>
+                    </a>
+                    <a class="thumbnail" href="#" data-zoom-image="{{URL::asset('front/image/product/macbook_air_4-500x500.jpg')}}" data-image="{{URL::asset('front/image/product/macbook_air_4-350x350.jpg')}}" title="Laptop Silver black">
+                        <img src="{{URL::asset('front/image/product/macbook_air_4-66x66.jpg')}}" title="Laptop Silver black" alt="Laptop Silver black" />
+                    </a>
+                    <a class="thumbnail" href="#" data-zoom-image="{{URL::asset('front/image/product/macbook_air_2-500x500.jpg')}}" data-image="{{URL::asset('front/image/product/macbook_air_2-350x350.jpg')}}" title="Laptop Silver black">
+                        <img src="{{URL::asset('front/image/product/macbook_air_2-66x66.jpg')}}" title="Laptop Silver black" alt="Laptop Silver black" />
+                    </a>
+                    <a class="thumbnail" href="#" data-zoom-image="{{URL::asset('front/image/product/macbook_air_3-500x500.jpg')}}" data-image="{{URL::asset('front/image/product/macbook_air_3-350x350.jpg')}}" title="Laptop Silver black">
+                        <img src="{{URL::asset('front/image/product/macbook_air_3-66x66.jpg')}}" title="Laptop Silver black" alt="Laptop Silver black" />
+                    </a>
+                </div>
               </div>
               <div class="col-sm-6">
                 <ul class="list-unstyled description">

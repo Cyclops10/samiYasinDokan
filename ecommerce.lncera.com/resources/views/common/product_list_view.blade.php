@@ -62,11 +62,16 @@
                         @foreach($products as $product)
                         <?php
                             $image = json_decode($product['image']);
+
+                            if(empty($image[0]))
+                                $image_path = asset('storage/images/default_image.png');
+                            else
+                                $image_path = asset('storage/'.$image[0]);
                         ?>
                             <tr>
                                 <td>
-                                    <a class="image-popup-no-margins" href="{{asset('storage/'.$image[0])}}">
-                                        <img class="img-fluid" src="{{asset('storage/'.$image[0])}}" width="75">
+                                    <a class="image-popup-no-margins" href="{{$image_path}}">
+                                        <img class="img-fluid" src="{{$image_path}}" width="75">
                                     </a>
                                 </td>
                                 <td>{{$product->name}}</td>
@@ -75,7 +80,7 @@
                                 <td><button type="button" class="mb-1 mt-1 mr-1 btn btn-success">Success</button></td>
                                 <td class="actions-hover actions-fade">
                                     <a href="{{route('admin_product_edit_show',$product->id)}}"><i class="fa fa-pencil"></i></a>
-                                    <a href="{{route('admin_category_delete',$product->id)}}" class="delete-row"><i class="fa fa-trash-o"></i></a>
+                                    <a href="{{route('admin_product_delete',$product->id)}}" class="delete-row"><i class="fa fa-trash-o"></i></a>
                                     <a href="#" class="delete-row" alt="Preview"><i class="fa fa-window-maximize" aria-hidden="true"></i></a>
                                 </td>
                             </tr>
