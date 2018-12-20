@@ -1,15 +1,20 @@
 @extends('layouts.main')
 
+@section('product_page_css1_product')
+    <link rel="stylesheet" type="text/css" href="{{URL::asset('front/js/swipebox/src/css/swipebox.min.css')}}" />
+@endsection
 
 @section('content')
 
   <div id="container">
     <div class="container">
       <!-- Breadcrumb Start-->
+
       <ul class="breadcrumb">
         <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="index.html" itemprop="url"><span itemprop="title"><i class="fa fa-home"></i></span></a></li>
-        <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="category.html" itemprop="url"><span itemprop="title">Electronics</span></a></li>
-        <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="product.html" itemprop="url"><span itemprop="title">Laptop Silver black</span></a></li>
+        @foreach($category as $cat)
+            <li itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><a href="category.html" itemprop="url"><span itemprop="title">{{$cat->name}}</span></a></li>
+        @endforeach
       </ul>
       <!-- Breadcrumb End-->
       <div class="row">
@@ -28,21 +33,21 @@
               ?>
               <div class="col-sm-6">
                 <div class="image">
-                    <img class="img-responsive" itemprop="image" id="zoom_01" src="{{$image_path}}" title="Laptop Silver black" alt="Laptop Silver black" data-zoom-image="{{$image_path}}" />
+                    <img class="img-responsive" itemprop="image" id="zoom_01" src="{{$image_path}}" title="Laptop Silver black" alt="Laptop Silver black" data-zoom-image="{{asset('storage/'.$image[1])}}"/>
                 </div>
                 <div class="center-block text-center">
                     <span class="zoom-gallery"><i class="fa fa-search"></i> Click image for Gallery</span>
                 </div>
 
                 <div class="image-additional" id="gallery_01">
-                    <a class="thumbnail" href="#" data-zoom-image="{{$image_path}}" data-image="{{$image_path}}" title="Laptop Silver black">
-                        <img src="{{$image_path}}" title="Laptop Silver black" alt = "Laptop Silver black"/>
+                    <a class="thumbnail" href="#" data-zoom-image="{{asset('storage/'.$image[1])}}" data-image="{{asset('storage/'.$image[0])}}" title="Laptop Silver black">
+                        <img src="{{asset('storage/'.$image[2])}}" title="Laptop Silver black" alt = "Laptop Silver black" width="66" height="66"/>
                     </a>
-                    <a class="thumbnail" href="#" data-zoom-image="{{URL::asset('front/image/product/macbook_air_4-500x500.jpg')}}" data-image="{{URL::asset('front/image/product/macbook_air_4-350x350.jpg')}}" title="Laptop Silver black">
-                        <img src="{{URL::asset('front/image/product/macbook_air_4-66x66.jpg')}}" title="Laptop Silver black" alt="Laptop Silver black" />
+                    <a class="thumbnail" href="#" data-zoom-image="{{asset('storage/'.$image[4])}}" data-image="{{asset('storage/'.$image[3])}}" title="Laptop Silver black">
+                        <img src="{{asset('storage/'.$image[5])}}" title="Laptop Silver black" alt="Laptop Silver black" />
                     </a>
-                    <a class="thumbnail" href="#" data-zoom-image="{{URL::asset('front/image/product/macbook_air_2-500x500.jpg')}}" data-image="{{URL::asset('front/image/product/macbook_air_2-350x350.jpg')}}" title="Laptop Silver black">
-                        <img src="{{URL::asset('front/image/product/macbook_air_2-66x66.jpg')}}" title="Laptop Silver black" alt="Laptop Silver black" />
+                    <a class="thumbnail" href="#" data-zoom-image="{{asset('storage/'.$image[7])}}" data-image="{{asset('storage/'.$image[6])}}" title="Laptop Silver black">
+                        <img src="{{asset('storage/'.$image[8])}}" title="Laptop Silver black" alt="Laptop Silver black" />
                     </a>
                     <a class="thumbnail" href="#" data-zoom-image="{{URL::asset('front/image/product/macbook_air_3-500x500.jpg')}}" data-image="{{URL::asset('front/image/product/macbook_air_3-350x350.jpg')}}" title="Laptop Silver black">
                         <img src="{{URL::asset('front/image/product/macbook_air_3-66x66.jpg')}}" title="Laptop Silver black" alt="Laptop Silver black" />
@@ -430,7 +435,7 @@ $("#zoom_01").elevateZoom({
 	zoomWindowFadeOut: 500,
 	lensFadeIn: 500,
 	lensFadeOut: 500,
-	loadingIcon: 'image/progress.gif'
+	loadingIcon: '{{URL::asset('front/image/progress.gif')}}'
 	});
 //////pass the images to swipebox
 $("#zoom_01").bind("click", function(e) {

@@ -95,4 +95,9 @@ class CategoriesController extends Controller
         return Redirect::to('admin/category')->with('message','Something went wrong, Please try again ');
     }
 
+    public function getCatParents($catId)
+    {
+
+    }
+
 }

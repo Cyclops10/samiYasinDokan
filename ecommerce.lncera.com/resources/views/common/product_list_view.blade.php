@@ -63,15 +63,15 @@
                         <?php
                             $image = json_decode($product['image']);
 
-                            if(empty($image[0]))
+                            if(empty($image[2]))
                                 $image_path = asset('storage/images/default_image.png');
                             else
-                                $image_path = asset('storage/'.$image[0]);
+                                $image_path = asset('storage/'.$image[2]);
                         ?>
                             <tr>
                                 <td>
                                     <a class="image-popup-no-margins" href="{{$image_path}}">
-                                        <img class="img-fluid" src="{{$image_path}}" width="75">
+                                        <img class="img-fluid" src="{{$image_path}}" width="66">
                                     </a>
                                 </td>
                                 <td>{{$product->name}}</td>

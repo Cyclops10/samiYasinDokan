@@ -42,4 +42,21 @@ class Category extends Model
     {
         return $this->hasMany('App\Product', 'cat_id');
     }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function getParentsAttribute()
+    {
+        $parents = collect([]);
+
+        $parents->prepend($this);
+        $parent = $this->parent;
+
+        while(!is_null($parent)) {
+            $parents->prepend($parent);
+            $parent = $parent->parent;
+        }
+        return $parents;
+    }
 }

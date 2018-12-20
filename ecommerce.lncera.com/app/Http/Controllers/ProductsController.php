@@ -11,17 +11,20 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use ImageProcess;
 
 class ProductsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     public function frontSingleProductView($id)
     {
-        return view('product')->with(['product' => Product::findOrFail($id)]);
+        $product = Product::findOrFail($id);
+        $category = Category::findOrFail($product->cat_id);
+        return view('product')->with(['product' => $product,'category'=>$category->getParentsAttribute()]);
     }
     public function productListView()
     {
@@ -50,45 +53,51 @@ class ProductsController extends Controller
         $images=array();
         $validator = Validator::make(Input::all(), Product::rules(0));
 
-//        print("<html><head></head><body><pre>".print_r(json_encode(Input::get('element'),JSON_PRETTY_PRINT),true)."</pre></body></html>");
-        //echo 'sami1';
-
         if($validator->passes())
         {
-            //echo 'sami2';
             if($request->hasFile('images'))
             {
-                //echo 'sami3';
-                $allowedfileExtension=['pdf','jpg','png','jpeg'];
+                $allowedFileExtension=['jpg','png','jpeg'];
                 $files = $request->file('images');
                 foreach($files as $file)
                 {
-                    //echo 'sami4';
                     $filename = $file->getClientOriginalName();
                     $extension = $file->getClientOriginalExtension();
-                    $check=in_array($extension,$allowedfileExtension);
+                    $check=in_array($extension,$allowedFileExtension);
                     if($check)
                     {
-                        //echo 'sami5';
-                        $filename = $file->store('public/images');
-                        if(Storage::exists($filename))
+                        echo 'sami1';
+                        $processImage350 = ImageProcess::make($file);
+                        $processImage500 = ImageProcess::make($file);
+                        $processImage66 = ImageProcess::make($file);
+
+                        $processImage350->encode('png');
+                        $processImage350->resize(350,350);
+                        if($processImage350->save(storage_path('app').'/public/images/350x350_'.$filename))
                         {
-                            //echo 'sami6';
-                            array_push($images, substr($filename,7));
-                            print("<html><head></head><body><pre>".print_r(json_encode($images,JSON_PRETTY_PRINT),true)."</pre></body></html>");
-                            echo "Upload Successfully";
+                            echo 'sami23';
+                            array_push($images, "images/350x350_".$filename);
                         }
-                        else
+
+                        $processImage500->encode('png');
+                        $processImage500->resize(500,500);
+                        if($processImage500->save(storage_path('app').'/public/images/500x500_'.$filename))
                         {
-                            //echo 'sami7';
-                            return Redirect::to(route('admin_product'))
-                            ->with('message','Image Upload Failed')
-                            ->withErrors($validator)
-                            ->withInput();
+                            echo 'sami33';
+                            array_push($images, "images/500x500_".$filename);
+                        }
+
+                        $processImage66->encode('png');
+                        $processImage66->resize(66,66);
+                        if($processImage66->save(storage_path('app').'/public/images/66x66_'.$filename))
+                        {
+                            echo 'sami34';
+                            array_push($images, "images/66x66_".$filename);
                         }
                     }
                     else
                     {
+                        echo 'sami4';
                         return Redirect::to(route('admin_product'))
                             ->with('message','Invalid Extension')
                             ->withErrors($validator)
@@ -97,7 +106,6 @@ class ProductsController extends Controller
                 }
             }
 
-            //echo 'sami8';
             $product = new Product();
             $product->name=Input::get('name');
             $product->cat_id=Input::get('cat_id');
@@ -107,8 +115,6 @@ class ProductsController extends Controller
             $product->element=json_encode(Input::get('element'),JSON_PRETTY_PRINT);
             $product->image=json_encode($images,JSON_PRETTY_PRINT);
             $product->save();
-
-            //$product->elements()->attach(Input::get('subelement'));
 
             return Redirect::to(route('admin_product_list'))->with('message','Product Created');
         }

@@ -13,6 +13,7 @@
 <link rel="stylesheet" type="text/css" href="{{URL::asset('front/css/stylesheet.css')}}" />
 <link rel="stylesheet" type="text/css" href="{{URL::asset('front/css/owl.carousel.css')}}" />
 <link rel="stylesheet" type="text/css" href="{{URL::asset('front/css/owl.transitions.css')}}" />
+@yield('product_page_css1_product')
 <link rel="stylesheet" type="text/css" href="{{URL::asset('front/css/responsive.css')}}" />
 <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans' type='text/css'>
 <!-- CSS Part End-->
